@@ -1,3 +1,3 @@
-export default interface Nome {
-    names: string
+export default interface UserName {
+    users: string
 };

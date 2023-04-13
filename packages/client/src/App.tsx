@@ -1,70 +1,69 @@
-import React from 'react';
 import { useState } from 'react';
+import {Routes,Route, useNavigate} from 'react-router-dom'
 import Styled from 'styled-components';
 import './App.css';
+import MessageSendButton from './pages/MessageSendButton';
+import User  from './pages/User';
+//import UserName from "../../shared/src/interfaces"
 
 
-const SendButton = Styled.button`margin: 5px; padding:5px; color: #555; background: papaya-whip`;
-const Input = Styled.input`margin: 5px; padding:5px; color: #555; background: papaya-whip`;
 const Message= Styled.p`margin: 5px; padding:5px; color: #555; background: papaya-whip`
 
-                         /*props är lika med en objekt, som har två functioner som property {onSend:(message:string)=>{}, onCancel: ()=> void }, 
-                         som den ena här function har som parameter en sträng, och den andra ä r tom */
-const MessageSendButton = (props: { onSend: (message: string) => void /*, onCancel: ()=> void*/ }) => {
-
-  const [message, setMessage] = useState  < string > ('');
- 
-  // const props = {
-  //   onsend:(message:string)=>{}
-  // }
-
-  return (
-    <>
-        <Input value={message} onChange={(e) => { setMessage(e.target.value) }} />
-        <SendButton  onClick={(e)=> props.onSend(message)} > send</SendButton>
-    </>
-  )
-}
 
 function App() {
 
+
+  const navigate = useNavigate();
+
   const [messages, setMessages] = useState<string[]>([]);
+  const [users, setUsers] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
-    const sendMessage = (message: string) => {
-      setMessages([...messages, message])
+  const sendMessage = (message: string) => {
+    messages.push(users);
+      setMessages([...messages, message]);
       console.log(messages.length)
-    }
+  }
+
+  const ActualUser =  (item: string | undefined )  => {
+    console.log()
+     if (!item ) {
+       return setError('ange ett giltig username')
+     } else {
+       setUsers(item)
+       navigate('/Chat')
+     }
+  } 
   
-
-
-  // const HandleOnCancel=()=>{
-  // return console.log('hej)
-  //   };  
   
   return (
+    
     <div className="App">
-      <header className="App-header">
-        
-        my chat app
-        
-      </header>
+       
+        <Routes>
+          <Route path='/' element={< User onSend2={ActualUser}/>} />
+          <Route path='/Chat' element={< MessageSendButton onSend={sendMessage} />} />
+        </Routes>
+      
+      
 
       <div className='App-content' >
-      <div className='MessageList' >
+        <div className='MessageList' >
+          
         {
           messages.map((message,index) => {
             return (
               <Message key={index} > {message} </Message>
             )
           })
-        }
-        
+          } {error} 
+          
       </div>
-        <MessageSendButton onSend={sendMessage} /*onCancel={HandleOnCancel}*/ />
-                          {/* här skickar vi mot functionen MessageSendButton en property som skickar meddelandet, och en till fiktiv property för att visa hur det går till */}
       </div>
-    </div>
+      </div>
+      
   );
 }
 
 export default App;
+
